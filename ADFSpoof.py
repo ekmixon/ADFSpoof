@@ -66,7 +66,7 @@ def parse_args():
         elif command and command == 'saml2':
             saml_set = frozenset([args.endpoint, args.nameidformat, args.nameid, args.rpidentifier, args.assertions])
 
-            if not args.config and any([arg is None for arg in saml_set]):
+            if not args.config and any(arg is None for arg in saml_set):
                 sys.stderr.write("If not using a config file you must specify all the other SAML 2.0 args. Quitting.\n")
                 die()
 
@@ -156,7 +156,7 @@ def get_module_params(command):
                 'RPIdentifier': args.rpidentifier,
                 'Assertions': args.assertions
             }
-        params.update(saml2_params)
+        params |= saml2_params
         name_identifier = "ID"
 
     return params, name_identifier

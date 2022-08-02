@@ -9,28 +9,39 @@ def random_string():
 
 
 def new_guid(stream):
-    guid = []
-    guid.append(stream[3] << 24 | stream[2] << 16 | stream[1] << 8 | stream[0])
-    guid.append(stream[5] << 8 | stream[4])
-    guid.append(stream[7] << 8 | stream[6])
-    guid.append(stream[8])
-    guid.append(stream[9])
-    guid.append(stream[10])
-    guid.append(stream[11])
-    guid.append(stream[12])
-    guid.append(stream[13])
-    guid.append(stream[14])
-    guid.append(stream[15])
-    return guid
+    return [
+        stream[3] << 24 | stream[2] << 16 | stream[1] << 8 | stream[0],
+        stream[5] << 8 | stream[4],
+        stream[7] << 8 | stream[6],
+        stream[8],
+        stream[9],
+        stream[10],
+        stream[11],
+        stream[12],
+        stream[13],
+        stream[14],
+        stream[15],
+    ]
 
 
 def encode_object_guid(guid):
     guid = guid.replace('}', '').replace('{', '')
     guid_parts = guid.split('-')
-    hex_string = guid_parts[0][6:] + guid_parts[0][4:6] + guid_parts[0][2:4] + guid_parts[0][0:2] + guid_parts[1][2:] + guid_parts[1][0:2] + guid_parts[2][2:] + guid_parts[2][0:2] + guid_parts[3] + guid_parts[4]
+    hex_string = (
+        guid_parts[0][6:]
+        + guid_parts[0][4:6]
+        + guid_parts[0][2:4]
+        + guid_parts[0][:2]
+        + guid_parts[1][2:]
+        + guid_parts[1][:2]
+        + guid_parts[2][2:]
+        + guid_parts[2][:2]
+        + guid_parts[3]
+        + guid_parts[4]
+    )
+
     hex_array = bytearray.fromhex(hex_string)
-    immutable_id = base64.b64encode(hex_array)
-    return immutable_id
+    return base64.b64encode(hex_array)
 
 
 def die():

@@ -73,14 +73,11 @@ class EncryptedPFX():
         if self.DEBUG:
             sys.stderr.write("Derived key: {0}\n".format(key))
 
-        self.encryption_key = key[0:16]
+        self.encryption_key = key[:16]
         self.mac_key = key[16:]
 
     def _decode_octet_string(self, remains=None):
-        if remains:
-            buff = remains
-        else:
-            buff = self._raw[8:]
+        buff = remains or self._raw[8:]
         octet_string, remains = der_decode(buff, OctetString())
 
         return octet_string, remains
@@ -94,7 +91,7 @@ class EncryptedPFX():
         else:
             length_initial &= 127
             input_arr = []
-            for x in range(0, length_initial):
+            for x in range(length_initial):
                 input_arr.append(buff[x + 1])
                 bytes_read += 1
             length = input_arr[0]
@@ -124,7 +121,7 @@ class EncryptedPFX():
         return encryption_oid, mac_oid, remains
 
     def decode(self):
-        version = struct.unpack('>I', self._raw[0:4])[0]
+        version = struct.unpack('>I', self._raw[:4])[0]
 
         if version != 1:
             sys.stderr.write("Version should be 1   .\n")
